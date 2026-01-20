@@ -8,6 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface DeployRepository extends JpaRepository<Deploy, Long> {
-    Optional<Deploy> findByProjectName(String projectName);
+//    Optional<Deploy> findByProjectName(String projectName);
 }
 

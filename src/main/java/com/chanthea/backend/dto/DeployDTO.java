@@ -9,5 +9,6 @@ public class DeployDTO {
     @NotBlank(message = "Name is required")
     private String projectName;
     private String gitUrl;
-    private String subdomain;
+    private String getImageTag;
+//    private String subdomain;
 }

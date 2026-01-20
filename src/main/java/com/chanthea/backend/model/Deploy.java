@@ -3,6 +3,8 @@ package com.chanthea.backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -17,7 +19,14 @@ public class Deploy {
     private Long id;
     private String projectName;
     private String gitUrl;
+    @Column(length = 20)
     private String status;      // "BUILDING", "READY", "FAILED"
     private String subdomain;   // "my-app.chanthea.com"
     private String imageTag;    // Docker tag from Jenkins
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }
