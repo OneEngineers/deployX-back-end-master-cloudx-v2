@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://db-svc:5432/myapp
+    url: jdbc:postgresql://localhost:5432/myapp
     username: postgres
     password: password@123456
     driver-class-name: org.postgresql.Driver
@@ -11,3 +11,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+jenkins:
+  url: http://your-jenkins-ip:8080/job/deploy-pipeline/buildWithParameters
+  user: admin
+  token: 1172a6e...

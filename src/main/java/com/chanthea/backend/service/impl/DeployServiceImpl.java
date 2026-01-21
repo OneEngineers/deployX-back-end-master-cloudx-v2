@@ -1,12 +1,15 @@
 package com.chanthea.backend.service.impl;
 
-import com.chanthea.backend.dto.DeployDTO;
-import com.chanthea.backend.exception.BusinessException;
 import com.chanthea.backend.model.Deploy;
 import com.chanthea.backend.repository.DeployRepository;
 import com.chanthea.backend.service.DeployService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -14,44 +17,76 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DeployServiceImpl implements DeployService {
 
-    private final DeployRepository deployRepository;
+    private final DeployRepository repository;
+    private final RestTemplate restTemplate;
 
-    @Override
-    public Deploy initiateDeployment(DeployDTO dto) {
-        Deploy deploy = Deploy.builder()
-                .projectName(dto.getProjectName())
-                .gitUrl(dto.getGitUrl())
-                .subdomain(dto.getSubdomain())
-                .status("BUILDING")
-                .build();
+    @Value("${jenkins.url}")
+    private String jenkinsUrl;
 
-        return deployRepository.save(deploy);
-    }
+    @Value("${jenkins.user}")
+    private String jenkinsUser;
+
+    @Value("${jenkins.token}")
+    private String jenkinsToken;
 
     @Override
     public List<Deploy> getAllDeployments() {
-        return deployRepository.findAll();
+        return repository.findAll();
     }
 
     @Override
     public Deploy getDeploymentById(Long id) {
-        return deployRepository.findById(id)
-                .orElseThrow(() -> new BusinessException("Deployment not found with ID: " + id));
+        return repository.findById(id).orElseThrow(() -> new RuntimeException("រកមិនឃើញទិន្នន័យឡើយ!"));
     }
 
     @Override
-    public void updateStatus(Long id, String status, String imageTag) {
+    public Deploy startDeployment(Deploy request) {
+        // ១. រក្សាទុកក្នុង DB ជាមួយ status BUILDING
+        request.setStatus("BUILDING");
+        Deploy savedDeploy = repository.save(request);
+
+        // ២. ហៅទៅ Jenkins Pipeline
+        try {
+            triggerJenkins(savedDeploy);
+        } catch (Exception e) {
+            savedDeploy.setStatus("FAILED");
+            repository.save(savedDeploy);
+            throw new RuntimeException("Jenkins Trigger Error: " + e.getMessage());
+        }
+
+        return savedDeploy;
+    }
+
+    private void triggerJenkins(Deploy deploy) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth(jenkinsUser, jenkinsToken);
+
+        // ប្រើវិធីនេះជំនួសវិញ ប្រសិនបើ fromHttpUrl រកមិនឃើញ
+        String url = UriComponentsBuilder.newInstance()
+                .scheme("http")
+                .host("your-jenkins-ip")
+                .port(8080)
+                .path("/job/deploy-pipeline/buildWithParameters")
+                .queryParam("DEPLOY_ID", deploy.getId())
+                .queryParam("PROJECT_NAME", deploy.getProjectName())
+                .queryParam("GIT_URL", deploy.getGitUrl())
+                .queryParam("IMAGE_TAG", (deploy.getImageTag() != null) ? deploy.getImageTag() : "latest")
+                .build()
+                .toUriString();
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        restTemplate.postForEntity(url, entity, String.class);
+    }
+
+    @Override
+    public Deploy updateStatus(Long id, String status, String imageTag) {
         Deploy deploy = getDeploymentById(id);
         deploy.setStatus(status);
-        if (imageTag != null) deploy.setImageTag(imageTag);
-        deployRepository.save(deploy);
-    }
 
-    @Override
-    public void deleteDeployment(Long id) {
-        if (!deployRepository.existsById(id)) {
-            throw new BusinessException("Cannot delete: Deployment not found with ID: " + id);
+        if (imageTag != null) {
+            deploy.setImageTag(imageTag);
         }
-        deployRepository.deleteById(id);
+
+        return repository.save(deploy);
     }
 }

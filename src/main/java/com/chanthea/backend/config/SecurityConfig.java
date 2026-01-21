@@ -11,10 +11,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Required for POST/PUT/DELETE
+                .cors(cors -> cors.configure(http))
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         // Allow specific path
-                        .requestMatchers("/api/v1/deploy/**").permitAll()
+                        .requestMatchers("/api/v1/deploys/**").permitAll()
+                        .requestMatchers("/api/deploy/callback").permitAll()
                         // Or allow everything
                         .anyRequest().permitAll()
                 );
