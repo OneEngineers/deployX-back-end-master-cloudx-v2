@@ -1,10 +1,8 @@
-package com.chanthea.backend.repository;
+package com.api.cloudx.repository;
 
-import com.chanthea.backend.model.Deploy;
+import com.api.cloudx.model.Deploy;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
 
 @Repository
 public interface DeployRepository extends JpaRepository<Deploy, Long> {

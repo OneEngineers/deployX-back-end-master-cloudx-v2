@@ -1,4 +1,4 @@
-package com.chanthea.backend;
+package com.api.cloudx;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

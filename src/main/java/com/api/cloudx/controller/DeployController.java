@@ -1,7 +1,7 @@
-package com.chanthea.backend.controller;
+package com.api.cloudx.controller;
 
-import com.chanthea.backend.model.Deploy;
-import com.chanthea.backend.service.DeployService;
+import com.api.cloudx.model.Deploy;
+import com.api.cloudx.service.DeployService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

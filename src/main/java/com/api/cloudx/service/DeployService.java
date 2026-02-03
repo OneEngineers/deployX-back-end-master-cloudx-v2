@@ -1,6 +1,6 @@
-package com.chanthea.backend.service;
+package com.api.cloudx.service;
 
-import com.chanthea.backend.model.Deploy;
+import com.api.cloudx.model.Deploy;
 import java.util.List;
 
 public interface DeployService {

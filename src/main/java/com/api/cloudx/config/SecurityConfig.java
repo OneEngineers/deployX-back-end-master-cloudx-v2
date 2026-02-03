@@ -1,4 +1,4 @@
-package com.chanthea.backend.config;
+package com.api.cloudx.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

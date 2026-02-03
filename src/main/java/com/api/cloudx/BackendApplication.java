@@ -1,4 +1,4 @@
-package com.chanthea.backend;
+package com.api.cloudx;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

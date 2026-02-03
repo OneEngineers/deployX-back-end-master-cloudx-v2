@@ -1,8 +1,8 @@
-package com.chanthea.backend.service.impl;
+package com.api.cloudx.service.impl;
 
-import com.chanthea.backend.model.Deploy;
-import com.chanthea.backend.repository.DeployRepository;
-import com.chanthea.backend.service.DeployService;
+import com.api.cloudx.model.Deploy;
+import com.api.cloudx.repository.DeployRepository;
+import com.api.cloudx.service.DeployService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
