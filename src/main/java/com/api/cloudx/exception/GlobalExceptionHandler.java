@@ -1,6 +1,6 @@
-package com.chanthea.backend.exception;
+package com.api.cloudx.exception;
 
-import com.chanthea.backend.dto.ApiResponse;
+import com.api.cloudx.dto.ApiResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;

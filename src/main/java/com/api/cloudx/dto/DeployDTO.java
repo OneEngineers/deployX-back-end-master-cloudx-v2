@@ -1,4 +1,4 @@
-package com.chanthea.backend.dto;
+package com.api.cloudx.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

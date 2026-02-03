@@ -1,4 +1,4 @@
-package com.chanthea.backend.model;
+package com.api.cloudx.model;
 
 import jakarta.persistence.*;
 import lombok.*;

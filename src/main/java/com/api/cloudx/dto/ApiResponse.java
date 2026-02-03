@@ -1,4 +1,4 @@
-package com.chanthea.backend.dto;
+package com.api.cloudx.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
