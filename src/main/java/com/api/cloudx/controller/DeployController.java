@@ -1,6 +1,6 @@
 package com.api.cloudx.controller;
 
-import com.api.cloudx.model.Deploy;
+import com.api.cloudx.entities.DeployEntities;
 import com.api.cloudx.service.DeployService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +17,12 @@ public class DeployController {
     private final DeployService deployService;
 
     @PostMapping
-    public ResponseEntity<Deploy> createDeployment(@RequestBody Deploy request) {
+    public ResponseEntity<DeployEntities> createDeployment(@RequestBody DeployEntities request) {
         return ResponseEntity.ok(deployService.startDeployment(request));
     }
 
     @GetMapping
-    public ResponseEntity<List<Deploy>> getAll() {
+    public ResponseEntity<List<DeployEntities>> getAll() {
         return ResponseEntity.ok(deployService.getAllDeployments());
     }
 

@@ -1,4 +1,4 @@
-package com.api.cloudx.model;
+package com.api.cloudx.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "deployments")
-public class Deploy {
+public class DeployEntities {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

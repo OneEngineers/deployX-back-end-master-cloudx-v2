@@ -1,11 +1,12 @@
 package com.api.cloudx.service;
 
-import com.api.cloudx.model.Deploy;
+import com.api.cloudx.entities.DeployEntities;
+
 import java.util.List;
 
 public interface DeployService {
-    Deploy startDeployment(Deploy request);
-    List<Deploy> getAllDeployments();
-    Deploy getDeploymentById(Long id);
-    Deploy updateStatus(Long id, String status, String imageTag);
+    DeployEntities startDeployment(DeployEntities request);
+    List<DeployEntities> getAllDeployments();
+    DeployEntities getDeploymentById(Long id);
+    DeployEntities updateStatus(Long id, String status, String imageTag);
 }

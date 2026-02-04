@@ -1,6 +1,6 @@
 package com.api.cloudx.service.impl;
 
-import com.api.cloudx.model.Deploy;
+import com.api.cloudx.entities.DeployEntities;
 import com.api.cloudx.repository.DeployRepository;
 import com.api.cloudx.service.DeployService;
 import lombok.RequiredArgsConstructor;
@@ -30,34 +30,34 @@ public class DeployServiceImpl implements DeployService {
     private String jenkinsToken;
 
     @Override
-    public List<Deploy> getAllDeployments() {
+    public List<DeployEntities> getAllDeployments() {
         return repository.findAll();
     }
 
     @Override
-    public Deploy getDeploymentById(Long id) {
+    public DeployEntities getDeploymentById(Long id) {
         return repository.findById(id).orElseThrow(() -> new RuntimeException("រកមិនឃើញទិន្នន័យឡើយ!"));
     }
 
     @Override
-    public Deploy startDeployment(Deploy request) {
+    public DeployEntities startDeployment(DeployEntities request) {
         // ១. រក្សាទុកក្នុង DB ជាមួយ status BUILDING
         request.setStatus("BUILDING");
-        Deploy savedDeploy = repository.save(request);
+        DeployEntities savedDeployEntities = repository.save(request);
 
         // ២. ហៅទៅ Jenkins Pipeline
         try {
-            triggerJenkins(savedDeploy);
+            triggerJenkins(savedDeployEntities);
         } catch (Exception e) {
-            savedDeploy.setStatus("FAILED");
-            repository.save(savedDeploy);
+            savedDeployEntities.setStatus("FAILED");
+            repository.save(savedDeployEntities);
             throw new RuntimeException("Jenkins Trigger Error: " + e.getMessage());
         }
 
-        return savedDeploy;
+        return savedDeployEntities;
     }
 
-    private void triggerJenkins(Deploy deploy) {
+    private void triggerJenkins(DeployEntities deployEntities) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth(jenkinsUser, jenkinsToken);
 
@@ -66,11 +66,11 @@ public class DeployServiceImpl implements DeployService {
                 .scheme("http")
                 .host("your-jenkins-ip")
                 .port(8080)
-                .path("/job/deploy-pipeline/buildWithParameters")
-                .queryParam("DEPLOY_ID", deploy.getId())
-                .queryParam("PROJECT_NAME", deploy.getProjectName())
-                .queryParam("GIT_URL", deploy.getGitUrl())
-                .queryParam("IMAGE_TAG", (deploy.getImageTag() != null) ? deploy.getImageTag() : "latest")
+                .path("/job/deployEntities-pipeline/buildWithParameters")
+                .queryParam("DEPLOY_ID", deployEntities.getId())
+                .queryParam("PROJECT_NAME", deployEntities.getProjectName())
+                .queryParam("GIT_URL", deployEntities.getGitUrl())
+                .queryParam("IMAGE_TAG", (deployEntities.getImageTag() != null) ? deployEntities.getImageTag() : "latest")
                 .build()
                 .toUriString();
 
@@ -79,14 +79,14 @@ public class DeployServiceImpl implements DeployService {
     }
 
     @Override
-    public Deploy updateStatus(Long id, String status, String imageTag) {
-        Deploy deploy = getDeploymentById(id);
-        deploy.setStatus(status);
+    public DeployEntities updateStatus(Long id, String status, String imageTag) {
+        DeployEntities deployEntities = getDeploymentById(id);
+        deployEntities.setStatus(status);
 
         if (imageTag != null) {
-            deploy.setImageTag(imageTag);
+            deployEntities.setImageTag(imageTag);
         }
 
-        return repository.save(deploy);
+        return repository.save(deployEntities);
     }
 }
