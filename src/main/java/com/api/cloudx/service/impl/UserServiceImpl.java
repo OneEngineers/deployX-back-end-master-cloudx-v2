@@ -1,9 +1,13 @@
 package com.api.cloudx.service.impl;
 
+import com.api.cloudx.constant.AuthProvider;
+import com.api.cloudx.dto.SignUpRequestDTO;
 import com.api.cloudx.entities.UserEntities;
+import com.api.cloudx.exception.BadRequestException;
+import com.api.cloudx.exception.ResourceNotFoundException;
+import com.api.cloudx.repository.UserRepository;
 import com.api.cloudx.service.UserService;
 
-import io.fabric8.kubernetes.client.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,7 +28,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntities registerUser(SignUpRequest signUpRequest) {
+    public UserEntities registerUser(SignUpRequestDTO signUpRequest) {
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new BadRequestException("Email address already in use.");
         }
